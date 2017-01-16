@@ -1,0 +1,62 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+#------http://ropensci.org/blog/2016/03/01/pdftools-and-jeroen------------
+
+#------Introducing pdftools - A fast and portable PDF extractor------------
+
+library(pdftools)
+download.file("https://arxiv.org/pdf/1403.2805.pdf", "1403.2805.pdf", mode = "wb")
+txt<- pdf_text("1403.2805.pdf")
+
+#first page text
+cat(txt[1])
+
+#second page text
+cat(txt[2])
+
+#The pdf_toc function shows the table of contents, i.e. the section headers which pdf readers usually display in a menu on the left.
+
+#Table of contents
+toc<- pdf_toc("1403.2805.pdf")
+toc
+#Show as JSON
+jsonlite::toJSON(toc, auto_unbox = TRUE, pretty = TRUE)
+
+#Other functions provide information about fonts, attachments and metadata such as the author, creation date or tags.
+
+# Author, Version, etc
+info<- pdf_info("1403.2805.pdf")
+
+# Table with fonts
+fonts<- pdf_fonts("1403.2805.pdf")
+
+info
+fonts
+
+#------In R we can use pdf_render_page to render a page of the PDF into a bitmap, which can be stored as e.g. png or jpeg.------
+# renders pdf into bitmap array
+bitmap <- pdf_render_page("1403.2805.pdf", page = 1)
+# save bitmpa image
+png::writePNG(bitmap, "page.png")
+jpeg::writeJPEG(bitmap, "page.jpeg")
+webp::write_webp(bitmap, "page.webp")
+
+
+txt <- pdf_text("http://arxiv.org/pdf/1406.4806.pdf")
+cat(txt[18])
+cat(txt[19])
+
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
